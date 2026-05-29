@@ -41,18 +41,19 @@ export const DashboardPage: React.FC = () => {
     const activeAccount = accounts[0];
     if (!activeAccount) return [{ date: 'Сегодня', balance: 0 }];
 
-    let current = activeAccount.balance;
-    const data = [...transactions].reverse().map(tx => {
+    let balanceAfter = activeAccount.balance;
+    const points = transactions.map(tx => {
       const isOut = tx.fromAccountNumber === activeAccount.accountNumber;
-      const prev = current;
-      if (isOut) current += tx.amount;
-      else current -= tx.amount;
-      return {
+      const delta = isOut ? -tx.amount : tx.amount;
+      const point = {
         date: new Date(tx.createdAt).toLocaleDateString(),
-        balance: prev,
+        balance: balanceAfter,
       };
+      balanceAfter -= delta;
+      return point;
     });
-    return data.length ? data : [{ date: 'Сегодня', balance: activeAccount.balance }];
+    points.reverse();
+    return points.length ? points : [{ date: 'Сегодня', balance: activeAccount.balance }];
   }, [transactions, accounts]);
 
   if (isLoading) {
