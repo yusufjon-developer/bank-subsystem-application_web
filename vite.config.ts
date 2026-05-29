@@ -7,4 +7,5 @@ export default defineConfig({
   define: {
     global: 'window',
   },
+  base: process.env.GITHUB_ACTIONS ? '/bank-subsystem-application_web/' : '/',
 })
